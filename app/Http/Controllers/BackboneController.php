@@ -60,9 +60,19 @@ class BackboneController extends Controller
             'tehnisi_4' => 'nullable|string|max:255',
             'tehnisi_5' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string',
+            'foto_1' => 'nullable|image|max:51200',
+            'foto_2' => 'nullable|image|max:51200',
         ]);
 
         $validated['user_id'] = Auth::id();
+
+        // Handle Photo Uploads
+        if ($request->hasFile('foto_1')) {
+            $validated['foto_1'] = $request->file('foto_1')->store('backbone', 'public');
+        }
+        if ($request->hasFile('foto_2')) {
+            $validated['foto_2'] = $request->file('foto_2')->store('backbone', 'public');
+        }
 
         $backbone = Backbone::create($validated);
 
@@ -72,10 +82,10 @@ class BackboneController extends Controller
         
         if ($backbone->tiang_odp) $message .= "🗼 Tiang ODP: {$backbone->tiang_odp}\n";
         
-        if ($backbone->jenis_kegiatan == 'UP ODP') {
+        if (str_contains(strtoupper($backbone->jenis_kegiatan), 'UP ODP')) {
             if ($backbone->ratio) $message .= "🔀 Ratio: {$backbone->ratio}\n";
             if ($backbone->splitter) $message .= "🔀 Splitter: {$backbone->splitter}\n";
-        } elseif ($backbone->jenis_kegiatan == 'Backbone') {
+        } elseif (str_contains(strtoupper($backbone->jenis_kegiatan), 'BACKBONE')) {
             if ($backbone->titik_koordinat) $message .= "📍 Koordinat: {$backbone->titik_koordinat}\n";
         }
         
@@ -91,6 +101,14 @@ class BackboneController extends Controller
         $message .= "\n<i>Data telah berhasil diinput.</i>";
 
         $telegramService->sendMessage($message, 'backbone');
+
+        // Send Photos to Telegram if exist
+        if ($backbone->foto_1) {
+            $telegramService->sendPhoto(storage_path('app/public/' . $backbone->foto_1), "Dokumentasi 1 - {$backbone->lokasi}", 'backbone');
+        }
+        if ($backbone->foto_2) {
+            $telegramService->sendPhoto(storage_path('app/public/' . $backbone->foto_2), "Dokumentasi 2 - {$backbone->lokasi}", 'backbone');
+        }
 
         return redirect()->route('backbone.index')->with('success', 'Data Backbone berhasil ditambahkan.');
     }
@@ -136,7 +154,23 @@ class BackboneController extends Controller
             'tehnisi_4' => 'nullable|string|max:255',
             'tehnisi_5' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string',
+            'foto_1' => 'nullable|image|max:51200',
+            'foto_2' => 'nullable|image|max:51200',
         ]);
+
+        // Handle Photo Uploads
+        if ($request->hasFile('foto_1')) {
+            if ($backbone->foto_1) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($backbone->foto_1);
+            }
+            $validated['foto_1'] = $request->file('foto_1')->store('backbone', 'public');
+        }
+        if ($request->hasFile('foto_2')) {
+            if ($backbone->foto_2) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($backbone->foto_2);
+            }
+            $validated['foto_2'] = $request->file('foto_2')->store('backbone', 'public');
+        }
 
         $backbone->update($validated);
 

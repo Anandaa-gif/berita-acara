@@ -105,32 +105,22 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Nama Teknisi 1</label>
-                                <select name="nama_teknisi_1" class="form-select @error('nama_teknisi_1') is-invalid @enderror" required>
-                                    <option value="">Pilih Teknisi 1</option>
-                                    <option value="AMRULLOH SYDIK IBRAHIM" {{ old('nama_teknisi_1') == 'AMRULLOH SYDIK IBRAHIM' ? 'selected' : '' }}>AMRULLOH SYDIK IBRAHIM</option>
-                                    <option value="SUTIPYO" {{ old('nama_teknisi_1') == 'SUTIPYO' ? 'selected' : '' }}>SUTIPYO</option>
-                                    <option value="ABDUL WAHED A" {{ old('nama_teknisi_1') == 'ABDUL WAHED A' ? 'selected' : '' }}>ABDUL WAHED A</option>
-                                    <option value="MAHFUD BAWAFI" {{ old('nama_teknisi_1') == 'MAHFUD BAWAFI' ? 'selected' : '' }}>MAHFUD BAWAFI</option>
-                                    <option value="NOVI TRIWORO" {{ old('nama_teknisi_1') == 'NOVI TRIWORO' ? 'selected' : '' }}>NOVI TRIWORO</option>
-                                    <option value="FATHOR ROSYID" {{ old('nama_teknisi_1') == 'FATHOR ROSYID' ? 'selected' : '' }}>FATHOR ROSYID</option>
-                                    <option value="MOH. YUNUS" {{ old('nama_teknisi_1') == 'MOH. YUNUS' ? 'selected' : '' }}>MOH. YUNUS</option>
-                                    <option value="MUHAMMAD HASAN" {{ old('nama_teknisi_1') == 'MUHAMMAD HASAN' ? 'selected' : '' }}>MUHAMMAD HASAN</option>
-                                </select>
+                                <input type="text" name="nama_teknisi_1" class="form-control @error('nama_teknisi_1') is-invalid @enderror" value="{{ old('nama_teknisi_1') }}" list="techOptions" placeholder="Ketik atau pilih teknisi" required>
                                 @error('nama_teknisi_1') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Nama Teknisi 2</label>
-                                <select name="nama_teknisi_2" class="form-select @error('nama_teknisi_2') is-invalid @enderror">
-                                    <option value="">Pilih Teknisi 2 (Opsional)</option>
-                                    <option value="AMRULLOH SYDIK IBRAHIM" {{ old('nama_teknisi_2') == 'AMRULLOH SYDIK IBRAHIM' ? 'selected' : '' }}>AMRULLOH SYDIK IBRAHIM</option>
-                                    <option value="SUTIPYO" {{ old('nama_teknisi_2') == 'SUTIPYO' ? 'selected' : '' }}>SUTIPYO</option>
-                                    <option value="ABDUL WAHED A" {{ old('nama_teknisi_2') == 'ABDUL WAHED A' ? 'selected' : '' }}>ABDUL WAHED A</option>
-                                    <option value="MAHFUD BAWAFI" {{ old('nama_teknisi_2') == 'MAHFUD BAWAFI' ? 'selected' : '' }}>MAHFUD BAWAFI</option>
-                                    <option value="NOVI TRIWORO" {{ old('nama_teknisi_2') == 'NOVI TRIWORO' ? 'selected' : '' }}>NOVI TRIWORO</option>
-                                    <option value="FATHOR ROSYID" {{ old('nama_teknisi_2') == 'FATHOR ROSYID' ? 'selected' : '' }}>FATHOR ROSYID</option>
-                                    <option value="MOH. YUNUS" {{ old('nama_teknisi_2') == 'MOH. YUNUS' ? 'selected' : '' }}>MOH. YUNUS</option>
-                                    <option value="MUHAMMAD HASAN" {{ old('nama_teknisi_2') == 'MUHAMMAD HASAN' ? 'selected' : '' }}>MUHAMMAD HASAN</option>
-                                </select>
+                                <input type="text" name="nama_teknisi_2" class="form-control @error('nama_teknisi_2') is-invalid @enderror" value="{{ old('nama_teknisi_2') }}" list="techOptions" placeholder="Ketik atau pilih teknisi (opsional)">
+                                <datalist id="techOptions">
+                                    <option value="AMRULLOH SYDIK IBRAHIM">
+                                    <option value="SUTIPYO">
+                                    <option value="ABDUL WAHED A">
+                                    <option value="MAHFUD BAWAFI">
+                                    <option value="NOVI TRIWORO">
+                                    <option value="FATHOR ROSYID">
+                                    <option value="MOH. YUNUS">
+                                    <option value="MUHAMMAD HASAN">
+                                </datalist>
                                 @error('nama_teknisi_2') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-4">

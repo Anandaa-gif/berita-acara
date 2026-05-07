@@ -86,6 +86,38 @@
         <!-- Tindakan & Teknisi -->
         <div class="row g-4">
             <div class="col-12">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 border-0">
+                        <h6 class="mb-0 fw-bold text-dark"><i class="fas fa-camera me-2 text-primary"></i> Dokumentasi Lapangan</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            @if($backbone->foto_1)
+                            <div class="col-md-6">
+                                <div class="rounded-3 overflow-hidden border">
+                                    <img src="{{ Storage::url($backbone->foto_1) }}" class="img-fluid w-100" alt="Dokumentasi 1" style="max-height: 300px; object-fit: cover;">
+                                </div>
+                                <small class="text-muted d-block mt-2 text-center">Foto Dokumentasi 1</small>
+                            </div>
+                            @endif
+                            @if($backbone->foto_2)
+                            <div class="col-md-6">
+                                <div class="rounded-3 overflow-hidden border">
+                                    <img src="{{ Storage::url($backbone->foto_2) }}" class="img-fluid w-100" alt="Dokumentasi 2" style="max-height: 300px; object-fit: cover;">
+                                </div>
+                                <small class="text-muted d-block mt-2 text-center">Foto Dokumentasi 2</small>
+                            </div>
+                            @endif
+                            @if(!$backbone->foto_1 && !$backbone->foto_2)
+                            <div class="col-12 text-center py-4">
+                                <i class="fas fa-image fa-3x text-light mb-3"></i>
+                                <p class="text-muted mb-0">Tidak ada foto dokumentasi.</p>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
                         <div class="row g-4">
@@ -137,7 +169,7 @@
                 <h5 class="modal-title fw-bold text-dark" id="backboneModalLabel">Edit Data Backbone</h5>
                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="backboneForm" action="{{ route('backbone.update', $backbone->id) }}" method="POST">
+            <form id="backboneForm" action="{{ route('backbone.update', $backbone->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-body p-4">

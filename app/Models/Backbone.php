@@ -25,6 +25,8 @@ class Backbone extends Model
         'tehnisi_4',
         'tehnisi_5',
         'keterangan',
+        'foto_1',
+        'foto_2',
         'user_id',
     ];
 

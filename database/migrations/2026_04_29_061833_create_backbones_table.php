@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string('tehnisi_4')->nullable();
             $table->string('tehnisi_5')->nullable();
             $table->text('keterangan')->nullable();
+            $table->string('foto_1')->nullable();
+            $table->string('foto_2')->nullable();
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

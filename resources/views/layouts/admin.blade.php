@@ -60,6 +60,8 @@
             padding: 30px 25px;
             display: flex;
             align-items: center;
+            justify-content: center;
+            flex-direction: column;
             gap: 12px;
         }
 
@@ -72,14 +74,17 @@
         }
 
         .sidebar-logo-icon {
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            border-radius: 8px;
+            width: 80px;
+            height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        .sidebar-logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .nav-section-title {
@@ -260,9 +265,8 @@
     <nav id="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo-icon">
-                <i class="fas fa-wifi text-white"></i>
+                <img src="{{ asset('storage/images/mgdt.png') }}" alt="Logo">
             </div>
-            <h5>MEGADATA.ISP</h5>
         </div>
         
         <div class="mt-2">
@@ -321,7 +325,10 @@
                 <button type="button" id="sidebarCollapse" class="btn btn-light me-3 border-0 shadow-none d-lg-none">
                     <i class="fas fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="#">MEGADATA</a>
+                <a class="navbar-brand d-flex d-lg-none align-items-center gap-2" href="#">
+                    <img src="{{ asset('storage/images/mgdt.png') }}" alt="Logo" width="30" height="30" style="object-fit: contain;">
+                    <span>MEGADATA</span>
+                </a>
                 
                 <div class="ms-auto d-flex align-items-center">
                     <!-- Notifications -->

@@ -194,7 +194,7 @@
                 <h5 class="modal-title fw-bold text-dark" id="backboneModalLabel">Data Backbone</h5>
                 <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="backboneForm" method="POST">
+            <form id="backboneForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div id="backboneMethodContainer"></div>
                 <div class="modal-body p-4">

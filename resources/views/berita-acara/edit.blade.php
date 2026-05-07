@@ -111,23 +111,22 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Nama Teknisi 1</label>
-                                <select name="nama_teknisi_1" class="form-select @error('nama_teknisi_1') is-invalid @enderror" required>
-                                    <option value="">Pilih Teknisi 1</option>
-                                    @php $techs = ['AMRULLOH SYDIK IBRAHIM', 'SUTIPYO', 'ABDUL WAHED A', 'MAHFUD BAWAFI', 'NOVI TRIWORO', 'FATHOR ROSYID', 'MOH. YUNUS', 'MUHAMMAD HASAN']; @endphp
-                                    @foreach($techs as $tech)
-                                        <option value="{{ $tech }}" {{ old('nama_teknisi_1', $beritaAcara->nama_teknisi_1) == $tech ? 'selected' : '' }}>{{ $tech }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="nama_teknisi_1" class="form-control @error('nama_teknisi_1') is-invalid @enderror" value="{{ old('nama_teknisi_1', $beritaAcara->nama_teknisi_1) }}" list="techOptions" placeholder="Ketik atau pilih teknisi" required>
                                 @error('nama_teknisi_1') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Nama Teknisi 2</label>
-                                <select name="nama_teknisi_2" class="form-select @error('nama_teknisi_2') is-invalid @enderror">
-                                    <option value="">Pilih Teknisi 2 (Opsional)</option>
-                                    @foreach($techs as $tech)
-                                        <option value="{{ $tech }}" {{ old('nama_teknisi_2', $beritaAcara->nama_teknisi_2) == $tech ? 'selected' : '' }}>{{ $tech }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="nama_teknisi_2" class="form-control @error('nama_teknisi_2') is-invalid @enderror" value="{{ old('nama_teknisi_2', $beritaAcara->nama_teknisi_2) }}" list="techOptions" placeholder="Ketik atau pilih teknisi (opsional)">
+                                <datalist id="techOptions">
+                                    <option value="AMRULLOH SYDIK IBRAHIM">
+                                    <option value="SUTIPYO">
+                                    <option value="ABDUL WAHED A">
+                                    <option value="MAHFUD BAWAFI">
+                                    <option value="NOVI TRIWORO">
+                                    <option value="FATHOR ROSYID">
+                                    <option value="MOH. YUNUS">
+                                    <option value="MUHAMMAD HASAN">
+                                </datalist>
                                 @error('nama_teknisi_2') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                             <div class="col-md-4">

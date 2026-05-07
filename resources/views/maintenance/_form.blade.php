@@ -35,22 +35,21 @@
 <div class="row mb-3">
     <div class="col-md-6">
         <label class="form-label fw-bold">Tehnisi 1</label>
-        <select name="tehnisi_1" id="tehnisi_1" class="form-select" required>
-            <option value="">Pilih Tehnisi 1</option>
-            @php $techs = ['AMRULLOH SYDIK IBRAHIM', 'SUTIPYO', 'ABDUL WAHED A', 'MAHFUD BAWAFI', 'NOVI TRIWORO', 'FATHOR ROSYID', 'MOH. YUNUS', 'MUHAMMAD HASAN']; @endphp
-            @foreach($techs as $tech)
-                <option value="{{ $tech }}">{{ $tech }}</option>
-            @endforeach
-        </select>
+        <input type="text" name="tehnisi_1" id="tehnisi_1" class="form-control" value="{{ isset($maintenance) ? $maintenance->tehnisi_1 : old('tehnisi_1') }}" list="techOptions" placeholder="Ketik atau pilih teknisi" required>
     </div>
     <div class="col-md-6">
         <label class="form-label fw-bold">Tehnisi 2</label>
-        <select name="tehnisi_2" id="tehnisi_2" class="form-select" required>
-            <option value="">Pilih Tehnisi 2</option>
-            @foreach($techs as $tech)
-                <option value="{{ $tech }}">{{ $tech }}</option>
-            @endforeach
-        </select>
+        <input type="text" name="tehnisi_2" id="tehnisi_2" class="form-control" value="{{ isset($maintenance) ? $maintenance->tehnisi_2 : old('tehnisi_2') }}" list="techOptions" placeholder="Ketik atau pilih teknisi (opsional)">
+        <datalist id="techOptions">
+            <option value="AMRULLOH SYDIK IBRAHIM">
+            <option value="SUTIPYO">
+            <option value="ABDUL WAHED A">
+            <option value="MAHFUD BAWAFI">
+            <option value="NOVI TRIWORO">
+            <option value="FATHOR ROSYID">
+            <option value="MOH. YUNUS">
+            <option value="MUHAMMAD HASAN">
+        </datalist>
     </div>
 </div>
 
