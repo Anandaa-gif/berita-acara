@@ -9,19 +9,24 @@ use App\Http\Controllers\BackboneController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ProfileController;
 
 // Auth Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/download-ba/{berita_acara}/{hash}', [BeritaAcaraController::class, 'publicDownloadPdf'])->name('berita-acara.public-download-pdf');
 
 // Protected Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
+
         return redirect('/dashboard');
     });
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/dashboard/test-telegram', [DashboardController::class, 'testTelegram'])->name('dashboard.test-telegram');
 
     // Berita Acara
     Route::get('/berita-acara', [BeritaAcaraController::class, 'index'])->name('berita-acara.index')->middleware('permission:berita_acara_view');
@@ -54,10 +59,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/backbone/{id}', [BackboneController::class, 'show'])->name('backbone.show')->middleware('permission:backbone_view');
     Route::put('/backbone/{id}', [BackboneController::class, 'update'])->name('backbone.update')->middleware('permission:backbone_edit');
     Route::delete('/backbone/{id}', [BackboneController::class, 'destroy'])->name('backbone.destroy')->middleware('permission:backbone_delete');
+    
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
-    // Admin Only: Users & Roles
+
+    // Role superadmin & teknisi 
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('roles', RoleController::class);
+
+        // Settings
+        Route::get('/settings/whatsapp', [SettingController::class, 'whatsapp'])->name('settings.whatsapp');
+        Route::post('/settings/whatsapp', [SettingController::class, 'updateWhatsapp'])->name('settings.whatsapp.update');
+        Route::post('/settings/whatsapp/test', [SettingController::class, 'testWhatsapp'])->name('settings.whatsapp.test');
     });
 });

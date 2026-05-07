@@ -13,17 +13,52 @@
 @endsection
 
 @section('content')
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form action="{{ route('backbone.index') }}" method="GET" class="row g-3 align-items-center">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" name="search" class="form-control bg-light border-0 shadow-none" placeholder="Cari lokasi atau tiang..." value="{{ request('search') }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0"><i class="fas fa-calendar text-muted"></i></span>
+                    <input type="date" name="start_date" class="form-control bg-light border-0 shadow-none" title="Dari Tanggal" value="{{ request('start_date') }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0"><i class="fas fa-calendar text-muted"></i></span>
+                    <input type="date" name="end_date" class="form-control bg-light border-0 shadow-none" title="Sampai Tanggal" value="{{ request('end_date') }}">
+                </div>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4 shadow-sm flex-grow-1">Filter</button>
+                @if(request('search') || request('start_date') || request('end_date'))
+                    <a href="{{ route('backbone.index') }}" class="btn btn-light shadow-sm" title="Reset Filter">
+                        <i class="fas fa-sync-alt"></i>
+                    </a>
+                @endif
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card border-0 shadow-sm overflow-hidden">
     <div class="card-body p-0">
-        <div class="table-responsive">
+        <div class="table-responsive" style="min-height: 450px;">
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light text-muted small text-uppercase fw-bold">
                     <tr>
                         <th class="ps-4 py-3" style="width: 50px;">#</th>
-                        <th class="py-3">Lokasi / Tiang</th>
-                        <th>Ratio & Splitter</th>
-                        <th>Redaman (In/Out)</th>
+                        <th class="py-3">Kegiatan & Lokasi</th>
+                        <th>Tiang / Koordinat</th>
+                        <th>Ratio & Redaman</th>
                         <th>Tim Teknisi</th>
+                        <th>Keterangan</th>
+                        <th>Tanggal</th>
                         <th class="text-end pe-4">Aksi</th>
                     </tr>
                 </thead>
@@ -34,54 +69,105 @@
                             {{ ($backbones->currentPage() - 1) * $backbones->perPage() + $loop->iteration }}
                         </td>
                         <td>
-                            <div class="fw-bold text-dark">{{ $b->lokasi }}</div>
-                            <small class="text-primary fw-bold d-block mt-1"><i class="fas fa-map-pin me-1"></i> {{ $b->tiang_odp }}</small>
+                            <div class="fw-bold text-primary">{{ $b->jenis_kegiatan ?? 'UP ODP' }}</div>
+                            <small class="text-dark fw-medium d-block mt-1"><i class="fas fa-map-marker-alt me-1 text-danger"></i> {{ $b->lokasi }}</small>
+                            @if($b->action)
+                                <span class="badge bg-light text-dark fw-semibold border-0 mt-1" style="font-size: 0.7rem;">Action: {{ $b->action }}</span>
+                            @endif
                         </td>
                         <td>
-                            <div class="d-flex gap-1">
-                                <span class="badge bg-info bg-opacity-10 text-info border-0 rounded-pill px-2">Ratio: {{ $b->ratio }}</span>
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary border-0 rounded-pill px-2">{{ $b->splitter }}</span>
+                            <div class="fw-bold text-dark small">
+                                @if($b->tiang_odp)
+                                    <i class="fas fa-map-pin me-1 text-primary"></i> {{ $b->tiang_odp }}
+                                @else
+                                    <span class="text-muted">---</span>
+                                @endif
                             </div>
+                            @if($b->titik_koordinat)
+                                <div class="text-xs font-monospace mt-1"><span class="text-muted">COORD:</span> {{ $b->titik_koordinat }}</div>
+                            @endif
                         </td>
                         <td>
-                            <div class="d-flex gap-3 align-items-center">
+                            @if($b->ratio || $b->splitter)
+                            <div class="d-flex gap-1 mb-1">
+                                <span class="badge bg-info bg-opacity-10 text-info border-0 rounded-pill px-2">Ratio: {{ $b->ratio ?? '-' }}</span>
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary border-0 rounded-pill px-2">{{ $b->splitter ?? '-' }}</span>
+                            </div>
+                            @endif
+                            @if($b->redaman_input || $b->redaman_output)
+                            <div class="d-flex gap-2 align-items-center mt-1">
                                 <div class="text-xs">
-                                    <span class="text-muted d-block small">INPUT</span>
-                                    <span class="text-success fw-bold">{{ $b->redaman_input }} <small>dBm</small></span>
+                                    <span class="text-success fw-bold">In: {{ $b->redaman_input ?? '-' }}</span>
                                 </div>
                                 <div class="text-xs">
-                                    <span class="text-muted d-block small">OUTPUT</span>
-                                    <span class="text-danger fw-bold">{{ $b->redaman_output }} <small>dBm</small></span>
+                                    <span class="text-danger fw-bold">Out: {{ $b->redaman_output ?? '-' }}</span>
                                 </div>
                             </div>
+                            @else
+                                <span class="text-muted small">---</span>
+                            @endif
                         </td>
                         <td>
-                            <div class="text-dark fw-bold small">{{ $b->tehnisi_1 }}</div>
-                            <div class="text-muted small">{{ $b->tehnisi_2 }}</div>
+                            <div class="fw-bold text-dark small">{{ $b->tehnisi_1 }}</div>
+                            @php
+                                $others = collect([$b->tehnisi_2, $b->tehnisi_3, $b->tehnisi_4, $b->tehnisi_5])->filter()->count();
+                            @endphp
+                            @if($others > 0)
+                                <span class="badge bg-light text-muted border-0 small">+{{ $others }} Teknisi</span>
+                            @endif
+                        </td>
+                        <td>
+                            <div class="text-dark fw-medium small text-truncate" style="max-width: 150px;" title="{{ $b->keterangan }}">{{ $b->keterangan ?? '-' }}</div>
+                        </td>
+                        <td>
+                            <div class="text-dark fw-bold">{{ $b->created_at->format('d/m/Y') }}</div>
+                            <small class="text-dark fw-medium small">{{ $b->created_at->format('H:i') }} WIB</small>
                         </td>
                         <td class="text-end pe-4">
-                            <div class="btn-group gap-1">
-                                @if(Auth::user()->hasPermission('backbone_edit'))
-                                <button type="button" class="btn btn-sm btn-outline-warning border-0 btn-edit-backbone rounded-circle" data-id="{{ $b->id }}" title="Edit">
-                                    <i class="fas fa-edit"></i>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm rounded-pill px-3 shadow-none border" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-h text-muted"></i>
                                 </button>
-                                @endif
+                                <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 mt-2" style="border-radius: 16px; min-width: 200px;">
+                                    <div class="px-3 py-2 mb-1 border-bottom">
+                                        <p class="text-uppercase text-muted fw-bold mb-0" style="font-size: 0.65rem; letter-spacing: 1px;">Opsi Backbone</p>
+                                    </div>
+                                    <a class="dropdown-item d-flex align-items-center rounded-3 py-2 mb-1" href="{{ route('backbone.show', $b->id) }}">
+                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                                            <i class="fas fa-eye small"></i>
+                                        </div>
+                                        <span class="fw-semibold small text-dark">Lihat Detail</span>
+                                    </a>
 
-                                @if(Auth::user()->hasPermission('backbone_delete'))
-                                <button type="button" class="btn btn-sm btn-outline-danger border-0 btn-delete-backbone rounded-circle" data-id="{{ $b->id }}" data-name="{{ $b->tiang_odp }}" title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                                <form id="delete-form-backbone-{{ $b->id }}" action="{{ route('backbone.destroy', $b->id) }}" method="POST" style="display: none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                                @endif
+                                    @if(Auth::user()->hasPermission('backbone_edit'))
+                                    <button type="button" class="dropdown-item d-flex align-items-center rounded-3 py-2 mb-1 btn-edit-backbone" data-id="{{ $b->id }}">
+                                        <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                                            <i class="fas fa-edit small"></i>
+                                        </div>
+                                        <span class="fw-semibold small text-dark">Edit Data</span>
+                                    </button>
+                                    @endif
+
+                                    @if(Auth::user()->hasPermission('backbone_delete'))
+                                    <div class="border-top my-1 opacity-50"></div>
+                                    <button type="button" class="dropdown-item d-flex align-items-center rounded-3 py-2 text-danger btn-delete-backbone" data-id="{{ $b->id }}" data-name="{{ $b->tiang_odp }}">
+                                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                                            <i class="fas fa-trash-alt small"></i>
+                                        </div>
+                                        <span class="fw-bold small">Hapus Data</span>
+                                    </button>
+                                    <form id="delete-form-backbone-{{ $b->id }}" action="{{ route('backbone.destroy', $b->id) }}" method="POST" style="display: none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    @endif
+                                </div>
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">
+                        <td colspan="8" class="text-center py-5 text-muted">
                             <i class="fas fa-network-wired fa-3x mb-3 d-block opacity-25"></i>
                             <p class="mb-0">Belum ada data backbone.</p>
                         </td>
@@ -93,7 +179,9 @@
     </div>
     @if($backbones->hasPages())
     <div class="card-footer bg-white py-3 border-0">
-        {{ $backbones->links() }}
+        <div class="d-flex justify-content-center">
+            {{ $backbones->links() }}
+        </div>
     </div>
     @endif
 </div>
@@ -131,6 +219,9 @@
             $('#backboneForm').attr('action', "{{ route('backbone.store') }}");
             $('#backboneMethodContainer').html('');
             $('#backboneForm')[0].reset();
+            if (typeof toggleFields === "function") {
+                toggleFields();
+            }
             $('#btnSaveBackbone').text('Simpan Data');
             $('#backboneModal').modal('show');
         });
@@ -151,6 +242,7 @@
                     $('#backboneForm').attr('action', "{{ url('backbone') }}/" + id);
                     $('#backboneMethodContainer').html('@method("PUT")');
                     
+                    $('#jenis_kegiatan').val(data.jenis_kegiatan || 'UP ODP');
                     $('#lokasi').val(data.lokasi);
                     $('#tiang_odp').val(data.tiang_odp);
                     $('#titik_koordinat').val(data.titik_koordinat);
@@ -161,7 +253,14 @@
                     $('#redaman_output').val(data.redaman_output);
                     $('#tehnisi_1').val(data.tehnisi_1);
                     $('#tehnisi_2').val(data.tehnisi_2);
+                    $('#tehnisi_3').val(data.tehnisi_3);
+                    $('#tehnisi_4').val(data.tehnisi_4);
+                    $('#tehnisi_5').val(data.tehnisi_5);
                     $('#keterangan').val(data.keterangan);
+                    
+                    if (typeof toggleFields === "function") {
+                        toggleFields();
+                    }
                     
                     $('#btnSaveBackbone').text('Perbarui Data');
                     btn.prop('disabled', false).html(originalContent);

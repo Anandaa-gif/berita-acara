@@ -13,9 +13,42 @@
 @endsection
 
 @section('content')
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <form action="{{ route('maintenance.index') }}" method="GET" class="row g-3 align-items-center">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" name="search" class="form-control bg-light border-0 shadow-none" placeholder="Cari nama atau alamat..." value="{{ request('search') }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0"><i class="fas fa-calendar text-muted"></i></span>
+                    <input type="date" name="start_date" class="form-control bg-light border-0 shadow-none" title="Dari Tanggal" value="{{ request('start_date') }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0"><i class="fas fa-calendar text-muted"></i></span>
+                    <input type="date" name="end_date" class="form-control bg-light border-0 shadow-none" title="Sampai Tanggal" value="{{ request('end_date') }}">
+                </div>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4 shadow-sm flex-grow-1">Filter</button>
+                @if(request('search') || request('start_date') || request('end_date'))
+                    <a href="{{ route('maintenance.index') }}" class="btn btn-light shadow-sm" title="Reset Filter">
+                        <i class="fas fa-sync-alt"></i>
+                    </a>
+                @endif
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card border-0 shadow-sm overflow-hidden">
     <div class="card-body p-0">
-        <div class="table-responsive">
+        <div class="table-responsive" style="min-height: 450px;">
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light text-muted small text-uppercase fw-bold">
                     <tr>
@@ -23,6 +56,7 @@
                         <th class="py-3">Nama Pelanggan</th>
                         <th>Keluhan & Tindakan</th>
                         <th>Tim Teknisi</th>
+                        <th>Keterangan</th>
                         <th>Tanggal Input</th>
                         <th class="text-end pe-4">Aksi</th>
                     </tr>
@@ -34,11 +68,14 @@
                             {{ ($maintenances->currentPage() - 1) * $maintenances->perPage() + $loop->iteration }}
                         </td>
                         <td>
+                            @if($m->jenis_kegiatan)
+                                <div class="fw-bold text-primary small mb-1">{{ $m->jenis_kegiatan }}</div>
+                            @endif
                             <div class="fw-bold text-dark">{{ $m->nama_pel }}</div>
-                            <small class="text-muted d-block text-truncate" style="max-width: 250px;">{{ $m->alamat_pel }}</small>
+                            <small class="text-dark fw-medium d-block text-truncate" style="max-width: 250px;">{{ $m->alamat_pel }}</small>
                         </td>
                         <td>
-                            <div class="text-dark fw-medium small"><i class="fas fa-exclamation-triangle text-warning me-1"></i> {{ Str::limit($m->komplain, 40) }}</div>
+                            <div class="text-dark fw-bold small"><i class="fas fa-exclamation-triangle text-warning me-1"></i> {{ Str::limit($m->komplain, 40) }}</div>
                             <div class="text-success small fw-bold"><i class="fas fa-check-circle me-1"></i> {{ Str::limit($m->action, 40) }}</div>
                         </td>
                         <td>
@@ -50,32 +87,57 @@
                             </div>
                         </td>
                         <td>
-                            <div class="text-dark fw-medium">{{ $m->created_at->format('d/m/Y') }}</div>
-                            <small class="text-muted small">{{ $m->created_at->format('H:i') }} WIB</small>
+                            <div class="text-dark fw-medium small text-truncate" style="max-width: 150px;" title="{{ $m->keterangan }}">{{ $m->keterangan ?? '-' }}</div>
+                        </td>
+                        <td>
+                            <div class="text-dark fw-bold">{{ $m->created_at->format('d/m/Y') }}</div>
+                            <small class="text-dark fw-medium small">{{ $m->created_at->format('H:i') }} WIB</small>
                         </td>
                         <td class="text-end pe-4">
-                            <div class="btn-group gap-1">
-                                @if(Auth::user()->hasPermission('maintenance_edit'))
-                                <button type="button" class="btn btn-sm btn-outline-warning border-0 btn-edit-maintenance rounded-circle" data-id="{{ $m->id }}" title="Edit">
-                                    <i class="fas fa-edit"></i>
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm rounded-pill px-3 shadow-none border" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-h text-muted"></i>
                                 </button>
-                                @endif
+                                <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 mt-2" style="border-radius: 16px; min-width: 200px;">
+                                    <div class="px-3 py-2 mb-1 border-bottom">
+                                        <p class="text-uppercase text-muted fw-bold mb-0" style="font-size: 0.65rem; letter-spacing: 1px;">Opsi Maintenance</p>
+                                    </div>
+                                    <a class="dropdown-item d-flex align-items-center rounded-3 py-2 mb-1" href="{{ route('maintenance.show', $m->id) }}">
+                                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                                            <i class="fas fa-eye small"></i>
+                                        </div>
+                                        <span class="fw-semibold small text-dark">Lihat Detail</span>
+                                    </a>
 
-                                @if(Auth::user()->hasPermission('maintenance_delete'))
-                                <button type="button" class="btn btn-sm btn-outline-danger border-0 btn-delete-maintenance rounded-circle" data-id="{{ $m->id }}" data-name="{{ $m->nama_pel }}" title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                                <form id="delete-form-maintenance-{{ $m->id }}" action="{{ route('maintenance.destroy', $m->id) }}" method="POST" style="display: none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                                @endif
+                                    @if(Auth::user()->hasPermission('maintenance_edit'))
+                                    <button type="button" class="dropdown-item d-flex align-items-center rounded-3 py-2 mb-1 btn-edit-maintenance" data-id="{{ $m->id }}">
+                                        <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                                            <i class="fas fa-edit small"></i>
+                                        </div>
+                                        <span class="fw-semibold small text-dark">Edit Laporan</span>
+                                    </button>
+                                    @endif
+
+                                    @if(Auth::user()->hasPermission('maintenance_delete'))
+                                    <div class="border-top my-1 opacity-50"></div>
+                                    <button type="button" class="dropdown-item d-flex align-items-center rounded-3 py-2 text-danger btn-delete-maintenance" data-id="{{ $m->id }}" data-name="{{ $m->nama_pel }}">
+                                        <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                                            <i class="fas fa-trash-alt small"></i>
+                                        </div>
+                                        <span class="fw-bold small">Hapus Laporan</span>
+                                    </button>
+                                    <form id="delete-form-maintenance-{{ $m->id }}" action="{{ route('maintenance.destroy', $m->id) }}" method="POST" style="display: none;">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    @endif
+                                </div>
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">
+                        <td colspan="6" class="text-center py-5 text-muted">
                             <i class="fas fa-tools fa-3x mb-3 d-block opacity-25"></i>
                             <p class="mb-0">Belum ada data laporan maintenance.</p>
                         </td>
@@ -87,7 +149,9 @@
     </div>
     @if($maintenances->hasPages())
     <div class="card-footer bg-white py-3 border-0">
-        {{ $maintenances->links() }}
+        <div class="d-flex justify-content-center">
+            {{ $maintenances->links() }}
+        </div>
     </div>
     @endif
 </div>
@@ -153,6 +217,7 @@
                     $('#maintenanceForm').attr('action', "{{ url('maintenance') }}/" + id);
                     $('#methodContainer').html('@method("PUT")');
                     
+                    $('#jenis_kegiatan').val(data.jenis_kegiatan);
                     $('#nama_pel').val(data.nama_pel);
                     $('#alamat_pel').val(data.alamat_pel);
                     $('#komplain').val(data.komplain);

@@ -20,23 +20,37 @@
 @section('content')
 <div class="card border-0 shadow-sm overflow-hidden">
     <div class="card-header bg-white py-4 border-0">
-        <form action="{{ route('berita-acara.index') }}" method="GET" class="row g-3">
+        <form action="{{ route('berita-acara.index') }}" method="GET" class="row g-3 align-items-center">
             <div class="col-md-4">
                 <div class="input-group">
                     <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" name="search" class="form-control bg-light border-0" placeholder="Cari nama, alamat, atau no KTP..." value="{{ $search }}">
+                    <input type="text" name="search" class="form-control bg-light border-0 shadow-none" placeholder="Cari nama, alamat..." value="{{ request('search') }}">
                 </div>
             </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-light px-4 fw-bold">Cari Data</button>
-                @if($search)
-                    <a href="{{ route('berita-acara.index') }}" class="btn btn-link text-danger text-decoration-none small">Reset</a>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0"><i class="fas fa-calendar text-muted"></i></span>
+                    <input type="date" name="start_date" class="form-control bg-light border-0 shadow-none" title="Dari Tanggal" value="{{ request('start_date') }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0"><i class="fas fa-calendar text-muted"></i></span>
+                    <input type="date" name="end_date" class="form-control bg-light border-0 shadow-none" title="Sampai Tanggal" value="{{ request('end_date') }}">
+                </div>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4 shadow-sm flex-grow-1">Filter</button>
+                @if(request('search') || request('start_date') || request('end_date'))
+                    <a href="{{ route('berita-acara.index') }}" class="btn btn-light shadow-sm" title="Reset Filter">
+                        <i class="fas fa-sync-alt"></i>
+                    </a>
                 @endif
             </div>
         </form>
     </div>
     <div class="card-body p-0">
-        <div class="table-responsive">
+        <div class="table-responsive" style="min-height: 450px;">
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light text-muted small text-uppercase fw-bold">
                     <tr>
@@ -56,11 +70,22 @@
                         </td>
                         <td>
                             <div class="fw-bold text-dark">{{ $ba->nama }}</div>
-                            <small class="text-muted d-block text-truncate" style="max-width: 200px;">{{ $ba->alamat }}</small>
+                            <div class="d-flex align-items-center">
+                                <small class="text-muted text-truncate" style="max-width: 180px;">{{ $ba->alamat }}</small>
+                                @if($ba->google_maps_link)
+                                    <a href="{{ $ba->google_maps_link }}" target="_blank" class="ms-2 text-danger" title="Buka di Maps">
+                                        <i class="fas fa-map-marker-alt" style="font-size: 0.75rem;"></i>
+                                    </a>
+                                @endif
+                            </div>
                         </td>
                         <td>
                             <div class="text-dark fw-medium small">{{ $ba->no_ktp }}</div>
-                            <div class="text-primary small fw-bold">{{ $ba->no_hp }}</div>
+                            <div class="small fw-bold">
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', substr($ba->no_hp, 0, 1) == '0' ? '62' . substr($ba->no_hp, 1) : $ba->no_hp) }}" target="_blank" class="text-primary text-decoration-none">
+                                    <i class="fab fa-whatsapp me-1"></i> {{ $ba->no_hp }}
+                                </a>
+                            </div>
                         </td>
                         <td>
                             <span class="badge bg-primary bg-opacity-10 text-primary mb-1 rounded-pill">{{ $ba->paket_berlangganan }}</span>
@@ -85,6 +110,15 @@
                                         </div>
                                         <span class="fw-semibold small text-dark">Lihat Detail</span>
                                     </a>
+
+                                    @if($ba->google_maps_link)
+                                     <a class="dropdown-item d-flex align-items-center rounded-3 py-2 mb-1" href="{{ $ba->google_maps_link }}" target="_blank">
+                                         <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                                             <i class="fas fa-map-marker-alt small"></i>
+                                         </div>
+                                         <span class="fw-semibold small text-dark">Buka di Maps</span>
+                                     </a>
+                                     @endif
                                     
                                     <a class="dropdown-item d-flex align-items-center rounded-3 py-2 mb-1" href="{{ route('berita-acara.download-pdf', $ba->id) }}">
                                         <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
@@ -133,7 +167,9 @@
     </div>
     @if($beritaAcaras->hasPages())
     <div class="card-footer bg-white py-3 border-0">
-        {{ $beritaAcaras->links() }}
+        <div class="d-flex justify-content-center">
+            {{ $beritaAcaras->links() }}
+        </div>
     </div>
     @endif
 </div>

@@ -95,8 +95,7 @@
         <div class="card border-0 shadow-sm h-100">
             <div class="card-header bg-white py-3 border-0">
                 <div class="d-flex align-items-center justify-content-between">
-                    <h6 class="mb-0 fw-bold text-dark"><i class="fas fa-history me-2 text-primary"></i> Berita Acara Terbaru</h6>
-                    <a href="{{ route('berita-acara.index') }}" class="btn btn-sm btn-light rounded-pill px-3">Lihat Semua</a>
+                    <h6 class="mb-0 fw-bold text-dark"><i class="fas fa-user-clock me-2 text-primary"></i> Riwayat Login Terbaru</h6>
                 </div>
             </div>
             <div class="card-body p-0">
@@ -104,39 +103,39 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="bg-light">
                             <tr>
-                                <th class="ps-4 py-3 text-muted fw-bold small text-uppercase">Pelanggan</th>
-                                <th class="py-3 text-muted fw-bold small text-uppercase">Tanggal Registrasi</th>
-                                <th class="py-3 text-muted fw-bold small text-uppercase">Paket</th>
-                                <th class="text-end pe-4 py-3 text-muted fw-bold small text-uppercase">Aksi</th>
+                                <th class="ps-4 py-3 text-muted fw-bold small text-uppercase">Pengguna</th>
+                                <th class="py-3 text-muted fw-bold small text-uppercase">Waktu Login</th>
+                                <th class="py-3 text-muted fw-bold small text-uppercase">IP Address</th>
+                                <th class="text-end pe-4 py-3 text-muted fw-bold small text-uppercase">Browser / Device</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($recent_ba as $ba)
+                            @forelse($login_logs as $log)
                             <tr>
                                 <td class="ps-4">
-                                    <div class="fw-bold text-dark">{{ $ba->nama }}</div>
-                                    <small class="text-muted text-xs d-block">{{ Str::limit($ba->alamat, 40) }}</small>
+                                    <div class="fw-bold text-dark">{{ $log->user->name ?? 'Unknown' }}</div>
+                                    <small class="text-muted text-xs d-block">{{ $log->user->role->name ?? 'User' }}</small>
                                 </td>
                                 <td>
-                                    <div class="text-dark fw-medium">{{ \Carbon\Carbon::parse($ba->tanggal_registrasi)->format('d M Y') }}</div>
-                                    <small class="text-muted small">ID: {{ substr($ba->id, 0, 8) }}</small>
+                                    <div class="text-dark fw-bold">{{ $log->created_at->format('d/m/Y') }}</div>
+                                    <small class="text-muted small fw-medium">{{ $log->created_at->format('H:i:s') }} WIB</small>
                                 </td>
                                 <td>
-                                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3">
-                                        {{ $ba->paket_berlangganan }}
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3">
+                                        {{ $log->ip_address ?? 'Unknown IP' }}
                                     </span>
                                 </td>
                                 <td class="text-end pe-4">
-                                    <a href="{{ route('berita-acara.show', $ba->id) }}" class="btn btn-sm btn-outline-primary border-0 rounded-circle" title="Detail">
-                                        <i class="fas fa-arrow-right"></i>
-                                    </a>
+                                    <div class="text-muted small text-truncate" style="max-width: 200px; display: inline-block;" title="{{ $log->user_agent }}">
+                                        {{ $log->user_agent ?? 'Unknown Device' }}
+                                    </div>
                                 </td>
                             </tr>
                             @empty
                             <tr>
                                 <td colspan="4" class="text-center py-5 text-muted">
-                                    <i class="fas fa-folder-open fa-3x mb-3 d-block opacity-25"></i>
-                                    Belum ada data terbaru.
+                                    <i class="fas fa-user-clock fa-3x mb-3 d-block opacity-25"></i>
+                                    Belum ada riwayat login.
                                 </td>
                             </tr>
                             @endforelse
@@ -186,6 +185,21 @@
                             </div>
                         </div>
                     </a>
+                    
+                    <form action="{{ route('dashboard.test-telegram') }}" method="POST" id="testTelegramForm">
+                        @csrf
+                        <button type="submit" class="quick-action-card w-100 p-3 rounded-4 border text-decoration-none transition-all text-start bg-white">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box bg-info text-white me-3">
+                                    <i class="fab fa-telegram-plane"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-dark">Test Bot Telegram</h6>
+                                    <small class="text-muted">Cek Koneksi Bot & Grup</small>
+                                </div>
+                            </div>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

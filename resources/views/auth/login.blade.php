@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Berita Acara Instalasi</title>
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('storage/images/mgdt.png') }}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -121,7 +123,10 @@
                     <span class="input-group-text bg-white border-end-0" style="border-radius: 10px 0 0 10px;">
                         <i class="fas fa-lock text-muted"></i>
                     </span>
-                    <input type="password" name="password" class="form-control border-start-0" placeholder="Masukkan password" style="border-radius: 0 10px 10px 0;" required>
+                    <input type="password" id="password" name="password" class="form-control border-start-0 border-end-0" placeholder="Masukkan password" style="border-radius: 0;" required>
+                    <button class="input-group-text bg-white border-start-0" type="button" id="togglePassword" style="border-radius: 0 10px 10px 0;">
+                        <i class="fas fa-eye text-muted"></i>
+                    </button>
                 </div>
             </div>
 
@@ -144,5 +149,21 @@
         </div>
     </div>
 
+    <script>
+        document.getElementById('togglePassword').addEventListener('click', function (e) {
+            const password = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                password.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    </script>
 </body>
 </html>

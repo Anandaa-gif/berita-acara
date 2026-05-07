@@ -13,19 +13,23 @@ return new class extends Migration
     {
         Schema::create('backbones', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('jenis_kegiatan')->nullable();
             $table->string('lokasi');
-            $table->string('tiang_odp');
-            $table->text('action');
-            $table->string('titik_koordinat');
-            $table->string('ratio');
-            $table->string('splitter');
-            $table->string('redaman_input');
-            $table->string('redaman_output');
+            $table->string('tiang_odp')->nullable();
+            $table->text('action')->nullable();
+            $table->string('titik_koordinat')->nullable();
+            $table->string('ratio')->nullable();
+            $table->string('splitter')->nullable();
+            $table->string('redaman_input')->nullable();
+            $table->string('redaman_output')->nullable();
             $table->string('tehnisi_1');
-            $table->string('tehnisi_2');
-            $table->text('keterangan');
+            $table->string('tehnisi_2')->nullable();
+            $table->string('tehnisi_3')->nullable();
+            $table->string('tehnisi_4')->nullable();
+            $table->string('tehnisi_5')->nullable();
+            $table->text('keterangan')->nullable();
+            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

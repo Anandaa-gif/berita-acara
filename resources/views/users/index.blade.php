@@ -76,7 +76,9 @@
     </div>
     @if($users->hasPages())
     <div class="card-footer bg-white border-0 py-3">
-        {{ $users->links() }}
+        <div class="d-flex justify-content-center">
+            {{ $users->links() }}
+        </div>
     </div>
     @endif
 </div>

@@ -352,7 +352,7 @@
             <tr>
                 <td>Biaya Registrasi</td>
                 <td>:</td>
-                <td>Rp. {{ number_format($beritaAcara->biaya_registrasi, 0, ',', '.') }},-</td>
+                <td>Rp. {{ number_format(round($beritaAcara->biaya_registrasi), 0, ',', '.') }},-</td>
             </tr>
         </table>
     </div>

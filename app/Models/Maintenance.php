@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
 class Maintenance extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use HasFactory, HasUuids;
 
     protected $fillable = [
+        'jenis_kegiatan',
         'nama_pel',
         'alamat_pel',
         'komplain',
@@ -19,8 +18,14 @@ class Maintenance extends Model
         'tehnisi_1',
         'tehnisi_2',
         'keterangan',
+        'user_id',
     ];
 
     protected $keyType = 'string';
     public $incrementing = false;
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

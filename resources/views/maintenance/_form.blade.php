@@ -1,6 +1,19 @@
-<div class="mb-3">
-    <label class="form-label fw-bold">Nama Pelanggan</label>
-    <input type="text" name="nama_pel" id="nama_pel" class="form-control" placeholder="Contoh: Budi Santoso" required>
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label class="form-label fw-bold">Jenis Kegiatan</label>
+        <input type="text" name="jenis_kegiatan" id="jenis_kegiatan" class="form-control" list="jenisKegiatanOptions" placeholder="Contoh: Perbaikan Kabel / Ganti Modem">
+        <datalist id="jenisKegiatanOptions">
+            <option value="Perbaikan Kabel">
+            <option value="Perbaikan Jaringan">
+            <option value="Ganti Modem">
+            <option value="Pengecekan Rutin">
+            <option value="Relokasi Perangkat">
+        </datalist>
+    </div>
+    <div class="col-md-6">
+        <label class="form-label fw-bold">Nama Pelanggan</label>
+        <input type="text" name="nama_pel" id="nama_pel" class="form-control" placeholder="Contoh: Budi Santoso" required>
+    </div>
 </div>
 
 <div class="mb-3">

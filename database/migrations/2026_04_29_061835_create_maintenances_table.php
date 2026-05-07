@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('maintenances', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('jenis_kegiatan')->nullable();
             $table->string('nama_pel');
             $table->text('alamat_pel');
             $table->text('komplain');
@@ -20,8 +21,8 @@ return new class extends Migration
             $table->string('tehnisi_1');
             $table->string('tehnisi_2');
             $table->text('keterangan');
+            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

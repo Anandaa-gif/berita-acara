@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEGADATA ISP - Admin Dashboard</title>
     
+    <!-- Favicon -->
+    <link rel="icon" href="{{ asset('storage/images/mgdt.png') }}" type="image/png">
+    
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -268,20 +271,21 @@
                 <i class="fas fa-th-large"></i> Dashboard
             </a>
 
-            <div class="nav-section-title">Layanan & Teknis</div>
+            <div class="nav-section-title">Layanan</div>
             @if(Auth::user()->hasPermission('berita_acara_view'))
             <a href="{{ route('berita-acara.index') }}" class="nav-link {{ request()->is('berita-acara*') ? 'active' : '' }}">
                 <i class="fas fa-file-invoice"></i> Berita Acara
             </a>
             @endif
 
+
+            <div class="nav-section-title">Infrastruktur & Teknis</div>
             @if(Auth::user()->hasPermission('maintenance_view'))
             <a href="{{ route('maintenance.index') }}" class="nav-link {{ request()->is('maintenance*') ? 'active' : '' }}">
                 <i class="fas fa-tools"></i> Maintenance
             </a>
             @endif
 
-            <div class="nav-section-title">Infrastruktur</div>
             @if(Auth::user()->hasPermission('vendor_view'))
             <a href="{{ route('vendor.index') }}" class="nav-link {{ request()->is('vendor*') ? 'active' : '' }}">
                 <i class="fas fa-building"></i> Vendor
@@ -290,7 +294,7 @@
 
             @if(Auth::user()->hasPermission('backbone_view'))
             <a href="{{ route('backbone.index') }}" class="nav-link {{ request()->is('backbone*') ? 'active' : '' }}">
-                <i class="fas fa-network-wired"></i> Backbone & ODP
+                <i class="fas fa-network-wired"></i> Backbone & ODP 
             </a>
             @endif
 
@@ -301,6 +305,9 @@
             </a>
             <a href="{{ route('roles.index') }}" class="nav-link {{ request()->is('roles*') ? 'active' : '' }}">
                 <i class="fas fa-user-shield"></i> Role & Hak Akses
+            </a>
+            <a href="{{ route('settings.whatsapp') }}" class="nav-link {{ request()->is('settings/whatsapp*') ? 'active' : '' }}">
+                <i class="fas fa-bell"></i> Pengaturan Notifikasi
             </a>
             @endif
         </div>
@@ -342,8 +349,7 @@
                             <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=4361ee&color=fff&bold=true" class="rounded-circle" width="38" height="38">
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-3 p-2" style="min-width: 200px; border-radius: 12px;">
-                            <li><a class="dropdown-item py-2 rounded-2" href="#"><i class="fas fa-user-circle me-2"></i> Profil Saya</a></li>
-                            <li><a class="dropdown-item py-2 rounded-2" href="#"><i class="fas fa-cog me-2"></i> Pengaturan</a></li>
+                            <li><a class="dropdown-item py-2 rounded-2" href="{{ route('profile.index') }}"><i class="fas fa-user-circle me-2"></i> Profil Saya</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST">

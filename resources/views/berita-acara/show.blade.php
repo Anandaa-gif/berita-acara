@@ -46,11 +46,20 @@
                     </div>
                     <div class="col-md-6">
                         <label class="text-muted small text-uppercase fw-bold d-block mb-1">No. HP / WhatsApp</label>
-                        <p class="text-dark fw-bold mb-0">{{ $beritaAcara->no_hp }}</p>
+                        <p class="mb-0">
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', substr($beritaAcara->no_hp, 0, 1) == '0' ? '62' . substr($beritaAcara->no_hp, 1) : $beritaAcara->no_hp) }}" target="_blank" class="text-dark fw-bold text-decoration-none">
+                                <i class="fab fa-whatsapp text-success me-1"></i> {{ $beritaAcara->no_hp }}
+                            </a>
+                        </p>
                     </div>
                     <div class="col-12">
                         <label class="text-muted small text-uppercase fw-bold d-block mb-1">Alamat Pemasangan</label>
-                        <p class="text-dark fw-bold mb-0">{{ $beritaAcara->alamat }}</p>
+                        <p class="text-dark fw-bold mb-2">{{ $beritaAcara->alamat }}</p>
+                        @if($beritaAcara->google_maps_link)
+                            <a href="{{ $beritaAcara->google_maps_link }}" target="_blank" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                <i class="fas fa-map-marker-alt me-1"></i> Buka di Google Maps
+                            </a>
+                        @endif
                     </div>
                 </div>
 

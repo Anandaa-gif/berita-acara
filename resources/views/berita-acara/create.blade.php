@@ -40,6 +40,15 @@
                                 <textarea name="alamat" rows="2" class="form-control @error('alamat') is-invalid @enderror" placeholder="Jl. Raya No. 123..." required>{{ old('alamat') }}</textarea>
                                 @error('alamat') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Link Titik Koordinat (Google Maps)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-map-marker-alt text-danger"></i></span>
+                                    <input type="url" name="google_maps_link" class="form-control border-start-0 @error('google_maps_link') is-invalid @enderror" value="{{ old('google_maps_link') }}" placeholder="https://maps.app.goo.gl/...">
+                                </div>
+                                <small class="text-muted">Opsional: Masukkan link dari Google Maps untuk memudahkan pencarian lokasi.</small>
+                                @error('google_maps_link') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
                         </div>
 
                         <hr class="my-4 opacity-50">
@@ -81,7 +90,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Biaya Registrasi (Rp)</label>
-                                <input type="number" name="biaya_registrasi" class="form-control @error('biaya_registrasi') is-invalid @enderror" value="{{ old('biaya_registrasi') }}" placeholder="0" required>
+                                <select name="biaya_registrasi" class="form-select @error('biaya_registrasi') is-invalid @enderror" required>
+                                    <option value="">Pilih Biaya</option>
+                                    <option value="250000" {{ old('biaya_registrasi') == '250000' ? 'selected' : '' }}>250.000</option>
+                                    <option value="150000" {{ old('biaya_registrasi') == '150000' ? 'selected' : '' }}>150.000</option>
+                                </select>
                                 @error('biaya_registrasi') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
                         </div>

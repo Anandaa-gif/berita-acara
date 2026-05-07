@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('no_hp');
             $table->text('alamat');
+            $table->string('google_maps_link')->nullable();
             $table->date('tanggal_registrasi');
             $table->string('paket_berlangganan');
             $table->string('jenis_perangkat');
@@ -33,7 +34,6 @@ return new class extends Migration
             $table->longText('ttd_petugas')->nullable();
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
