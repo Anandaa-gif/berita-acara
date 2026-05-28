@@ -58,7 +58,7 @@
         }
 
         .sidebar-header {
-            padding: 30px 25px 0px;
+            padding: 20px 25px 0px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -75,7 +75,7 @@
         }
 
         .sidebar-logo-icon {
-            width: 140px;
+            width: 100px;
             height: auto;
             display: flex;
             align-items: center;
@@ -89,7 +89,7 @@
         }
 
         .nav-section-title {
-            padding: 15px 25px 10px;
+            padding: 2px 25px 5px;
             font-size: 0.65rem;
             text-transform: uppercase;
             font-weight: 700;
@@ -98,7 +98,7 @@
         }
 
         .nav-link {
-            padding: 12px 25px;
+            padding: 10px 25px;
             color: rgba(255,255,255,0.6);
             display: flex;
             align-items: center;
@@ -106,8 +106,8 @@
             font-size: 0.9rem;
             font-weight: 500;
             transition: all 0.2s;
-            margin: 4px 15px;
-            border-radius: 10px;
+            margin: 2px 15px;
+            border-radius: 8px;
         }
 
         .nav-link i {
