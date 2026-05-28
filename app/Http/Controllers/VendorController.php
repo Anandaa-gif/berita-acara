@@ -35,8 +35,10 @@ class VendorController extends Controller
         }
 
         // Restrict non-admin users to their own records
-        if (!Auth::user()->hasRole('admin')) {
-            $query->where('user_id', Auth::id());
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if (!$user->hasRole('admin')) {
+            $query->where('user_id', $user->id);
         }
 
         $vendors = $query->latest()->paginate(10)->withQueryString();

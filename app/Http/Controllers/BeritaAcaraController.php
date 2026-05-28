@@ -47,8 +47,10 @@ class BeritaAcaraController extends Controller
         }
 
         // Restrict non-admin users to their own records only
-        if (!Auth::user()->hasRole('admin')) {
-            $query->where('user_id', Auth::id());
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if (!$user->hasRole('admin')) {
+            $query->where('user_id', $user->id);
         }
 
         $beritaAcaras = $query->latest()->paginate(10)->withQueryString();
@@ -63,8 +65,11 @@ class BeritaAcaraController extends Controller
 
     public function show(BeritaAcara $beritaAcara)
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        
         // Authorization: only owner or admin can view
-        if ($beritaAcara->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
+        if ($beritaAcara->user_id !== $user->id && !$user->hasRole('admin')) {
             abort(403, 'Unauthorized access');
         }
 
@@ -207,8 +212,11 @@ class BeritaAcaraController extends Controller
 
     public function edit(BeritaAcara $beritaAcara)
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
         // Authorization: only owner or admin can edit
-        if ($beritaAcara->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
+        if ($beritaAcara->user_id !== $user->id && !$user->hasRole('admin')) {
             abort(403, 'Unauthorized access');
         }
 
@@ -334,8 +342,11 @@ class BeritaAcaraController extends Controller
 
     public function destroy(BeritaAcara $beritaAcara)
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
         // Authorization: only owner or admin can delete
-        if ($beritaAcara->user_id !== Auth::id() && !Auth::user()->hasRole('admin')) {
+        if ($beritaAcara->user_id !== $user->id && !$user->hasRole('admin')) {
             abort(403, 'Unauthorized access');
         }
 
