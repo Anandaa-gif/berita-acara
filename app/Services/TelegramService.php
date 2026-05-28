@@ -54,6 +54,14 @@ class TelegramService
                 'parse_mode' => 'HTML',
             ]);
 
+            \App\Models\MessageLog::create([
+                'gateway' => 'telegram',
+                'target' => $chatId,
+                'message' => $message,
+                'status' => $response->successful() ? 'success' : 'failed',
+                'response' => $response->body()
+            ]);
+
             if ($response->failed()) {
                 Log::error('Telegram API error: ' . $response->body());
                 return false;
@@ -61,6 +69,13 @@ class TelegramService
 
             return true;
         } catch (\Exception $e) {
+            \App\Models\MessageLog::create([
+                'gateway' => 'telegram',
+                'target' => $chatId,
+                'message' => $message,
+                'status' => 'failed',
+                'response' => 'Exception: ' . $e->getMessage()
+            ]);
             Log::error('Telegram Exception: ' . $e->getMessage());
             return false;
         }
@@ -98,6 +113,14 @@ class TelegramService
                     'parse_mode' => 'HTML',
                 ]);
 
+            \App\Models\MessageLog::create([
+                'gateway' => 'telegram',
+                'target' => $chatId,
+                'message' => $caption ? $caption . ' [PHOTO: ' . basename($photoPath) . ']' : '[PHOTO: ' . basename($photoPath) . ']',
+                'status' => $response->successful() ? 'success' : 'failed',
+                'response' => $response->body()
+            ]);
+
             if ($response->failed()) {
                 Log::error('Telegram API error (sendPhoto): ' . $response->body());
                 return false;
@@ -105,6 +128,13 @@ class TelegramService
 
             return true;
         } catch (\Exception $e) {
+            \App\Models\MessageLog::create([
+                'gateway' => 'telegram',
+                'target' => $chatId,
+                'message' => $caption ? $caption . ' [PHOTO: ' . basename($photoPath) . ']' : '[PHOTO: ' . basename($photoPath) . ']',
+                'status' => 'failed',
+                'response' => 'Exception: ' . $e->getMessage()
+            ]);
             Log::error('Telegram Exception (sendPhoto): ' . $e->getMessage());
             return false;
         }

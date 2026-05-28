@@ -10,14 +10,23 @@
 <div class="row g-4 pb-5">
     <!-- Left Column: Telegram -->
     <div class="col-lg-6">
-        <div class="card border-0 shadow-sm h-100 overflow-hidden bg-white" style="border-radius: 20px;">
-            <div class="p-3 text-white" style="background: linear-gradient(135deg, #0088cc 0%, #00a2ed 100%);">
-                <div class="d-flex align-items-center">
-                    <i class="fab fa-telegram fa-lg me-3"></i>
-                    <div>
-                        <h5 class="fw-bold mb-0">Telegram Gateway</h5>
-                        <p class="mb-0 opacity-75 x-small">Konfigurasi multi-bot real-time</p>
+        <div class="flip-card-container">
+            <div class="flip-card-inner" id="telegram-card">
+                <!-- Front Side -->
+                <div class="flip-card-front">
+                    <div class="card border-0 shadow-sm h-100 overflow-hidden bg-white" style="border-radius: 20px;">
+                        <div class="p-3 text-white" style="background: linear-gradient(135deg, #0088cc 0%, #00a2ed 100%);">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="fab fa-telegram fa-lg me-3"></i>
+                        <div>
+                            <h5 class="fw-bold mb-0">Telegram Gateway</h5>
+                            <p class="mb-0 opacity-75 x-small">Konfigurasi multi-bot real-time</p>
+                        </div>
                     </div>
+                    <button type="button" class="btn btn-link p-0 border-0 shadow-none text-white text-decoration-none" onclick="document.getElementById('telegram-card').classList.toggle('flipped')" title="Lihat Riwayat Pesan">
+                        <i class="fas fa-arrow-right fa-lg"></i>
+                    </button>
                 </div>
             </div>
             <div class="card-body p-4">
@@ -139,19 +148,68 @@
                     </div>
                 </div>
             </div>
+            </div>
+        </div>
+        <!-- Back Side -->
+        <div class="flip-card-back">
+                <div class="card border-0 shadow-sm h-100 overflow-hidden bg-white" style="border-radius: 20px;">
+                    <div class="p-3 text-white" style="background: linear-gradient(135deg, #00a2ed 0%, #0088cc 100%);">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="fw-bold mb-0"><i class="fas fa-history me-2"></i> Riwayat Telegram</h5>
+                            <button type="button" class="btn btn-link p-0 border-0 shadow-none text-white text-decoration-none" onclick="document.getElementById('telegram-card').classList.toggle('flipped')" title="Kembali ke Pengaturan">
+                                <i class="fas fa-arrow-left fa-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0 overflow-auto" style="height: calc(100% - 60px);">
+                        <ul class="list-group list-group-flush">
+                            @forelse($telegramLogs as $log)
+                                <li class="list-group-item p-3 border-bottom">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge {{ $log->status == 'success' ? 'bg-success' : 'bg-danger' }}">
+                                            {{ strtoupper($log->status) }}
+                                        </span>
+                                        <small class="text-muted"><i class="far fa-clock me-1"></i>{{ $log->created_at->diffForHumans() }}</small>
+                                    </div>
+                                    <div class="fw-bold small mb-1 text-dark"><i class="fas fa-paper-plane me-1 text-muted"></i> {{ $log->target }}</div>
+                                    <div class="small text-muted" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ $log->message }}</div>
+                                    @if($log->status == 'failed')
+                                        <div class="small text-danger mt-1 fst-italic">{{ $log->response }}</div>
+                                    @endif
+                                </li>
+                            @empty
+                                <li class="list-group-item text-center p-5 text-muted">
+                                    <i class="fas fa-comment-slash fa-3x mb-3 opacity-25"></i>
+                                    <p>Belum ada riwayat pesan Telegram.</p>
+                                </li>
+                            @endforelse
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
     <!-- Right Column: WhatsApp -->
     <div class="col-lg-6">
-        <div class="card border-0 shadow-sm h-100 overflow-hidden bg-white" style="border-radius: 20px;">
-            <div class="p-3 text-white" style="background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);">
-                <div class="d-flex align-items-center">
-                    <i class="fab fa-whatsapp fa-lg me-3"></i>
-                    <div>
-                        <h5 class="fw-bold mb-0">WhatsApp Gateway</h5>
-                        <p class="mb-0 opacity-75 x-small">Integrasi Fonnte API</p>
+        <div class="flip-card-container">
+            <div class="flip-card-inner" id="whatsapp-card">
+                <!-- Front Side -->
+                <div class="flip-card-front">
+                    <div class="card border-0 shadow-sm h-100 overflow-hidden bg-white" style="border-radius: 20px;">
+                        <div class="p-3 text-white" style="background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="fab fa-whatsapp fa-lg me-3"></i>
+                        <div>
+                            <h5 class="fw-bold mb-0">WhatsApp Gateway</h5>
+                            <p class="mb-0 opacity-75 x-small">Integrasi Fonnte API</p>
+                        </div>
                     </div>
+                    <button type="button" class="btn btn-link p-0 border-0 shadow-none text-white text-decoration-none" onclick="document.getElementById('whatsapp-card').classList.toggle('flipped')" title="Lihat Riwayat Pesan">
+                        <i class="fas fa-arrow-right fa-lg"></i>
+                    </button>
                 </div>
             </div>
             <div class="card-body p-4">
@@ -201,19 +259,82 @@
                         </div>
                     </div>
                     
-                    <!-- New UI Card for Status -->
+                    <!-- Dynamic UI Card for Status -->
                     <div class="col-12 mt-auto">
-                        <div class="alert alert-soft-success border-0 rounded-4 d-flex align-items-center mb-0 p-3">
-                            <div class="pulse-container me-3">
-                                <div class="pulse-dot"></div>
+                        @if($fonnteStatus === 'active')
+                            <div class="alert alert-soft-success border-0 rounded-4 d-flex align-items-center mb-0 p-3">
+                                <div class="pulse-container me-3">
+                                    <div class="pulse-dot bg-success"></div>
+                                </div>
+                                <span class="small fw-bold text-success">Status: Fonnte Terhubung & Siap Digunakan</span>
                             </div>
-                            <span class="small fw-bold">Status: Gateway Terhubung & Siap Digunakan</span>
+                        @elseif($fonnteStatus === 'inactive')
+                            <div class="alert border-0 rounded-4 d-flex align-items-center mb-0 p-3" style="background-color: #fff3cd;">
+                                <div class="pulse-container me-3">
+                                    <div class="pulse-dot bg-warning" style="animation: none;"></div>
+                                </div>
+                                <span class="small fw-bold" style="color: #856404 !important;">Status: WhatsApp Disconnect / Token Invalid</span>
+                            </div>
+                        @elseif($fonnteStatus === 'error')
+                            <div class="alert alert-soft-danger border-0 rounded-4 d-flex align-items-center mb-0 p-3" style="background-color: #fceceb;">
+                                <div class="pulse-container me-3">
+                                    <div class="pulse-dot bg-danger" style="animation: none;"></div>
+                                </div>
+                                <span class="small fw-bold text-danger">Status: Gagal Terhubung ke Server Fonnte</span>
+                            </div>
+                        @else
+                            <div class="alert alert-soft-danger border-0 rounded-4 d-flex align-items-center mb-0 p-3" style="background-color: #fceceb;">
+                                <div class="pulse-container me-3">
+                                    <div class="pulse-dot bg-danger" style="animation: none;"></div>
+                                </div>
+                                <span class="small fw-bold text-danger">Status: Token Kosong (Gateway Tidak Aktif)</span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!-- Back Side -->
+        <div class="flip-card-back">
+                <div class="card border-0 shadow-sm h-100 overflow-hidden bg-white" style="border-radius: 20px;">
+                    <div class="p-3 text-white" style="background: linear-gradient(135deg, #128c7e 0%, #25d366 100%);">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h5 class="fw-bold mb-0"><i class="fas fa-history me-2"></i> Riwayat WhatsApp</h5>
+                            <button type="button" class="btn btn-link p-0 border-0 shadow-none text-white text-decoration-none" onclick="document.getElementById('whatsapp-card').classList.toggle('flipped')" title="Kembali ke Pengaturan">
+                                <i class="fas fa-arrow-left fa-lg"></i>
+                            </button>
                         </div>
+                    </div>
+                    <div class="card-body p-0 overflow-auto" style="height: calc(100% - 60px);">
+                        <ul class="list-group list-group-flush">
+                            @forelse($whatsappLogs as $log)
+                                <li class="list-group-item p-3 border-bottom">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge {{ $log->status == 'success' ? 'bg-success' : 'bg-danger' }}">
+                                            {{ strtoupper($log->status) }}
+                                        </span>
+                                        <small class="text-muted"><i class="far fa-clock me-1"></i>{{ $log->created_at->diffForHumans() }}</small>
+                                    </div>
+                                    <div class="fw-bold small mb-1 text-dark"><i class="fas fa-phone-alt me-1 text-muted"></i> {{ $log->target }}</div>
+                                    <div class="small text-muted" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">{{ $log->message }}</div>
+                                    @if($log->status == 'failed')
+                                        <div class="small text-danger mt-1 fst-italic">{{ $log->response }}</div>
+                                    @endif
+                                </li>
+                            @empty
+                                <li class="list-group-item text-center p-5 text-muted">
+                                    <i class="fas fa-comment-slash fa-3x mb-3 opacity-25"></i>
+                                    <p>Belum ada riwayat pesan WhatsApp.</p>
+                                </li>
+                            @endforelse
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Actions Footer -->
     <div class="col-12">
@@ -248,6 +369,14 @@
     <input type="hidden" name="telegram_vendor_chat_id" id="hidden_telegram_vendor_chat_id">
     <input type="hidden" name="telegram_backbone_token" id="hidden_telegram_backbone_token">
     <input type="hidden" name="telegram_backbone_chat_id" id="hidden_telegram_backbone_chat_id">
+</form>
+
+<!-- Hidden form for testing WA -->
+<form id="testForm" action="{{ route('settings.whatsapp.test') }}" method="POST" style="display: none;">
+    @csrf
+    <input type="hidden" name="wa_vendor" id="test_wa_vendor">
+    <input type="hidden" name="wa_notify_number" id="test_wa_notify_number">
+    <input type="hidden" name="wa_token" id="test_wa_token">
 </form>
 @endsection
 
@@ -435,5 +564,32 @@
     }
 
     body { background-color: #f4f7fe; }
+
+    /* 3D Flip Card Styles */
+    .flip-card-container {
+        perspective: 1000px;
+        height: 100%;
+        min-height: 550px;
+    }
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transform-style: preserve-3d;
+    }
+    .flip-card-inner.flipped {
+        transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+    .flip-card-back {
+        transform: rotateY(180deg);
+    }
 </style>
 @endsection

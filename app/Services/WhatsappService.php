@@ -64,8 +64,17 @@ class WhatsappService
                 ]);
 
                 $data = $response->json();
+                $isSuccess = $response->successful() && ($data['status'] ?? false) === true;
                 
-                if ($response->failed() || ($data['status'] ?? false) === false) {
+                \App\Models\MessageLog::create([
+                    'gateway' => 'whatsapp',
+                    'target' => $target,
+                    'message' => $message,
+                    'status' => $isSuccess ? 'success' : 'failed',
+                    'response' => $response->body()
+                ]);
+                
+                if (!$isSuccess) {
                     Log::error('Fonnte API error: ' . $response->body());
                     return false;
                 }
@@ -76,6 +85,13 @@ class WhatsappService
             Log::warning('Unsupported WhatsApp Vendor: ' . $this->vendor);
             return false;
         } catch (\Exception $e) {
+            \App\Models\MessageLog::create([
+                'gateway' => 'whatsapp',
+                'target' => $target,
+                'message' => $message,
+                'status' => 'failed',
+                'response' => 'Exception: ' . $e->getMessage()
+            ]);
             Log::error('WhatsApp Exception: ' . $e->getMessage());
             return false;
         }
@@ -120,8 +136,17 @@ class WhatsappService
                     ]);
 
                 $data = $response->json();
+                $isSuccess = $response->successful() && ($data['status'] ?? false) === true;
                 
-                if ($response->failed() || ($data['status'] ?? false) === false) {
+                \App\Models\MessageLog::create([
+                    'gateway' => 'whatsapp',
+                    'target' => $target,
+                    'message' => $message ? $message . ' [ATTACHMENT: ' . basename($filePath) . ']' : '[ATTACHMENT: ' . basename($filePath) . ']',
+                    'status' => $isSuccess ? 'success' : 'failed',
+                    'response' => $response->body()
+                ]);
+
+                if (!$isSuccess) {
                     Log::error('Fonnte API error: ' . $response->body());
                     return false;
                 }
@@ -131,6 +156,13 @@ class WhatsappService
 
             return false;
         } catch (\Exception $e) {
+            \App\Models\MessageLog::create([
+                'gateway' => 'whatsapp',
+                'target' => $target,
+                'message' => $message ? $message . ' [ATTACHMENT: ' . basename($filePath) . ']' : '[ATTACHMENT: ' . basename($filePath) . ']',
+                'status' => 'failed',
+                'response' => 'Exception: ' . $e->getMessage()
+            ]);
             Log::error('WhatsApp File Exception: ' . $e->getMessage());
             return false;
         }

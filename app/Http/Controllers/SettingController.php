@@ -33,7 +33,28 @@ class SettingController extends Controller
             'telegram_backbone_chat_id' => Setting::get('telegram_backbone_chat_id', ''),
         ];
 
-        return view('settings.whatsapp', compact('settings'));
+        $fonnteStatus = 'empty';
+        if (!empty($settings['wa_token'])) {
+            try {
+                $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+                    ->withHeaders(['Authorization' => $settings['wa_token']])
+                    ->post('https://api.fonnte.com/device');
+                
+                $data = $response->json();
+                if ($response->successful() && isset($data['device_status']) && strtolower($data['device_status']) === 'connect') {
+                    $fonnteStatus = 'active';
+                } else {
+                    $fonnteStatus = 'inactive';
+                }
+            } catch (\Exception $e) {
+                $fonnteStatus = 'error';
+            }
+        }
+
+        $telegramLogs = \App\Models\MessageLog::where('gateway', 'telegram')->latest()->take(20)->get();
+        $whatsappLogs = \App\Models\MessageLog::where('gateway', 'whatsapp')->latest()->take(20)->get();
+
+        return view('settings.whatsapp', compact('settings', 'fonnteStatus', 'telegramLogs', 'whatsappLogs'));
     }
 
     public function updateWhatsapp(Request $request)
