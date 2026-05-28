@@ -54,6 +54,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
             box-shadow: 10px 0 30px rgba(0,0,0,0.05);
+            overflow-y: auto;
         }
 
         .sidebar-header {
