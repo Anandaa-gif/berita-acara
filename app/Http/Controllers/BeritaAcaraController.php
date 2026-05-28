@@ -13,7 +13,8 @@ use App\Exports\BeritaAcaraExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use App\Notifications\NewDataNotification;
+use Illuminate\Support\Facades\Notification;
 class BeritaAcaraController extends Controller
 {
     public function index(Request $request)
@@ -112,6 +113,16 @@ class BeritaAcaraController extends Controller
         $validated['biaya_registrasi'] = (int) $cleanBiaya;
 
         $beritaAcara = BeritaAcara::create($validated);
+
+        // Send System Notification
+        $usersToNotify = User::where('id', '!=', Auth::id())->get();
+        if ($usersToNotify->isNotEmpty()) {
+            Notification::send($usersToNotify, new NewDataNotification(
+                'Berita Acara Baru',
+                Auth::user()->name . ' menambahkan Berita Acara untuk ' . $beritaAcara->nama,
+                route('berita-acara.show', $beritaAcara->id)
+            ));
+        }
 
         // Kirim Notifikasi Telegram
         $message = "<b>🔔 LAPORAN PEMASANGAN BARU</b>\n\n";

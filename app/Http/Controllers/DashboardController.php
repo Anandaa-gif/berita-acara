@@ -36,4 +36,17 @@ class DashboardController extends Controller
 
         return back()->with('error', 'Gagal mengirim pesan. Pastikan Token dan Chat ID di .env sudah benar.');
     }
+    public function markNotificationAsRead($id)
+    {
+        $notification = auth()->user()->notifications()->where('id', $id)->first();
+
+        if ($notification) {
+            $notification->markAsRead();
+            if (isset($notification->data['url'])) {
+                return redirect($notification->data['url']);
+            }
+        }
+        
+        return back();
+    }
 }

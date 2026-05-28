@@ -6,7 +6,9 @@ use App\Models\Vendor;
 use Illuminate\Http\Request;
 use App\Services\TelegramService;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\User;
+use App\Notifications\NewDataNotification;
+use Illuminate\Support\Facades\Notification;
 class VendorController extends Controller
 {
     public function index(Request $request)
@@ -69,6 +71,16 @@ class VendorController extends Controller
         $validated['user_id'] = Auth::id();
 
         $vendor = Vendor::create($validated);
+
+        // Send System Notification
+        $usersToNotify = User::where('id', '!=', Auth::id())->get();
+        if ($usersToNotify->isNotEmpty()) {
+            Notification::send($usersToNotify, new NewDataNotification(
+                'Data Vendor Baru',
+                Auth::user()->name . ' menambahkan data Vendor di ' . $vendor->lokasi,
+                route('vendor.index')
+            ));
+        }
 
         // Kirim Notifikasi Telegram
         $message = "<b>🏗️ LAPORAN VENDOR ({$vendor->jenis_kegiatan})</b>\n\n";

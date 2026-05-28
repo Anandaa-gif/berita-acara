@@ -6,7 +6,9 @@ use App\Models\Maintenance;
 use Illuminate\Http\Request;
 use App\Services\TelegramService;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\User;
+use App\Notifications\NewDataNotification;
+use Illuminate\Support\Facades\Notification;
 class MaintenanceController extends Controller
 {
     public function index(Request $request)
@@ -58,6 +60,16 @@ class MaintenanceController extends Controller
         $validated['user_id'] = Auth::id();
 
         $maintenance = Maintenance::create($validated);
+
+        // Send System Notification
+        $usersToNotify = User::where('id', '!=', Auth::id())->get();
+        if ($usersToNotify->isNotEmpty()) {
+            Notification::send($usersToNotify, new NewDataNotification(
+                'Laporan Maintenance Baru',
+                Auth::user()->name . ' menambahkan Maintenance untuk ' . $maintenance->nama_pel,
+                route('maintenance.index')
+            ));
+        }
 
         // Kirim Notifikasi Telegram
         $jenisStr = $maintenance->jenis_kegiatan ? strtoupper($maintenance->jenis_kegiatan) : 'MAINTENANCE';

@@ -58,7 +58,7 @@
         }
 
         .sidebar-header {
-            padding: 30px 25px;
+            padding: 30px 25px 0px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -75,8 +75,8 @@
         }
 
         .sidebar-logo-icon {
-            width: 80px;
-            height: 80px;
+            width: 140px;
+            height: auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -270,7 +270,7 @@
             </div>
         </div>
         
-        <div class="mt-2">
+        <div class="mt-0">
             <div class="nav-section-title">Overview</div>
             <a href="{{ route('dashboard') }}" class="nav-link {{ request()->is('dashboard*') ? 'active' : '' }}">
                 <i class="fas fa-th-large"></i> Dashboard
@@ -334,16 +334,40 @@
                 <div class="ms-auto d-flex align-items-center">
                     <!-- Notifications -->
                     <div class="dropdown me-3 d-none d-md-block">
-                        <a href="#" class="text-muted" data-bs-toggle="dropdown">
+                        <a href="#" class="text-muted position-relative" data-bs-toggle="dropdown">
                             <i class="fas fa-bell fa-lg"></i>
+                            @if(Auth::user()->unreadNotifications->count() > 0)
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                    {{ Auth::user()->unreadNotifications->count() }}
+                                </span>
+                            @endif
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow mt-3 py-2 px-3" style="width: 300px;">
-                            <li class="py-2 border-bottom">
+                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow mt-3 py-2 px-0" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                            <li class="py-2 px-3 border-bottom d-flex justify-content-between align-items-center">
                                 <small class="fw-bold">Notifikasi</small>
+                                @if(Auth::user()->unreadNotifications->count() > 0)
+                                    <span class="badge bg-primary rounded-pill">{{ Auth::user()->unreadNotifications->count() }} Baru</span>
+                                @endif
                             </li>
-                            <li class="py-3 text-center">
-                                <small class="text-muted">Tidak ada notifikasi baru</small>
-                            </li>
+                            
+                            @forelse(Auth::user()->unreadNotifications as $notification)
+                                <li>
+                                    <a class="dropdown-item py-2 px-3 border-bottom text-wrap" href="{{ route('notifications.read', $notification->id) }}">
+                                        <div class="d-flex align-items-start gap-2">
+                                            <div class="text-primary mt-1"><i class="fas fa-circle" style="font-size: 8px;"></i></div>
+                                            <div>
+                                                <small class="fw-bold d-block">{{ $notification->data['title'] ?? 'Info' }}</small>
+                                                <small class="text-muted d-block" style="font-size: 0.75rem;">{{ $notification->data['message'] ?? '' }}</small>
+                                                <small class="text-muted" style="font-size: 0.65rem;">{{ $notification->created_at->diffForHumans() }}</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            @empty
+                                <li class="py-3 text-center">
+                                    <small class="text-muted">Tidak ada notifikasi baru</small>
+                                </li>
+                            @endforelse
                         </ul>
                     </div>
 

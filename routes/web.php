@@ -27,7 +27,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/dashboard/test-telegram', [DashboardController::class, 'testTelegram'])->name('dashboard.test-telegram');
-
+    Route::get('/notifications/{id}/read', [DashboardController::class, 'markNotificationAsRead'])->name('notifications.read');
     // Berita Acara
     Route::get('/berita-acara', [BeritaAcaraController::class, 'index'])->name('berita-acara.index')->middleware('permission:berita_acara_view');
     Route::post('/proses-cetak-excel', [BeritaAcaraController::class, 'exportExcel'])->name('berita-acara.export-excel')->middleware('permission:berita_acara_view');

@@ -6,7 +6,9 @@ use App\Models\Backbone;
 use Illuminate\Http\Request;
 use App\Services\TelegramService;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\User;
+use App\Notifications\NewDataNotification;
+use Illuminate\Support\Facades\Notification;
 class BackboneController extends Controller
 {
     public function index(Request $request)
@@ -75,6 +77,16 @@ class BackboneController extends Controller
         }
 
         $backbone = Backbone::create($validated);
+
+        // Send System Notification
+        $usersToNotify = User::where('id', '!=', Auth::id())->get();
+        if ($usersToNotify->isNotEmpty()) {
+            Notification::send($usersToNotify, new NewDataNotification(
+                'Data Backbone Baru',
+                Auth::user()->name . ' menambahkan data Backbone di ' . $backbone->lokasi,
+                route('backbone.index')
+            ));
+        }
 
         // Kirim Notifikasi Telegram
         $message = "<b>🌐 DATA " . strtoupper($backbone->jenis_kegiatan) . " BARU</b>\n\n";
