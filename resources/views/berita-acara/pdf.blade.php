@@ -189,8 +189,8 @@
             padding: 5px;
         }
         .photo-item img {
-            max-width: 100%;
-            max-height: 200px;
+            width: 220px;
+            height: 165px;
             border: 1px solid #ddd;
             padding: 3px;
         }

@@ -373,7 +373,8 @@ class BeritaAcaraController extends Controller
         $fullPath = 'dokumentasi/' . $filename;
         
         $image = $manager->read($file);
-        $image->scaleDown(width: 800);
+        // Resize agar pas di dalam 800x600 tanpa dipotong (di-pad dengan background putih)
+        $image->pad(800, 600, 'ffffff');
         
         \Illuminate\Support\Facades\Storage::disk('public')->put($fullPath, (string) $image->toJpeg(75));
         
