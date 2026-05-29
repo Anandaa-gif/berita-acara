@@ -102,13 +102,13 @@ class BeritaAcaraController extends Controller
 
         // Handle File Uploads
         if ($request->hasFile('foto_odp')) {
-            $validated['foto_odp'] = $request->file('foto_odp')->store('dokumentasi', 'public');
+            $validated['foto_odp'] = $this->uploadAndCompressImage($request->file('foto_odp'));
         }
         if ($request->hasFile('foto_rumah')) {
-            $validated['foto_rumah'] = $request->file('foto_rumah')->store('dokumentasi', 'public');
+            $validated['foto_rumah'] = $this->uploadAndCompressImage($request->file('foto_rumah'));
         }
         if ($request->hasFile('foto_pelanggan')) {
-            $validated['foto_pelanggan'] = $request->file('foto_pelanggan')->store('dokumentasi', 'public');
+            $validated['foto_pelanggan'] = $this->uploadAndCompressImage($request->file('foto_pelanggan'));
         }
 
         $validated['user_id'] = Auth::id();
@@ -252,19 +252,19 @@ class BeritaAcaraController extends Controller
             if ($beritaAcara->foto_odp) {
                 Storage::disk('public')->delete($beritaAcara->foto_odp);
             }
-            $validated['foto_odp'] = $request->file('foto_odp')->store('dokumentasi', 'public');
+            $validated['foto_odp'] = $this->uploadAndCompressImage($request->file('foto_odp'));
         }
         if ($request->hasFile('foto_rumah')) {
             if ($beritaAcara->foto_rumah) {
                 Storage::disk('public')->delete($beritaAcara->foto_rumah);
             }
-            $validated['foto_rumah'] = $request->file('foto_rumah')->store('dokumentasi', 'public');
+            $validated['foto_rumah'] = $this->uploadAndCompressImage($request->file('foto_rumah'));
         }
         if ($request->hasFile('foto_pelanggan')) {
             if ($beritaAcara->foto_pelanggan) {
                 Storage::disk('public')->delete($beritaAcara->foto_pelanggan);
             }
-            $validated['foto_pelanggan'] = $request->file('foto_pelanggan')->store('dokumentasi', 'public');
+            $validated['foto_pelanggan'] = $this->uploadAndCompressImage($request->file('foto_pelanggan'));
         }
 
         // Clean currency input (remove dots/commas)
@@ -364,5 +364,19 @@ class BeritaAcaraController extends Controller
         $beritaAcara->delete();
 
         return redirect()->route('berita-acara.index')->with('success', 'Laporan Berita Acara berhasil dihapus.');
+    }
+
+    private function uploadAndCompressImage($file)
+    {
+        $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+        $filename = \Illuminate\Support\Str::random(40) . '.jpg';
+        $fullPath = 'dokumentasi/' . $filename;
+        
+        $image = $manager->read($file);
+        $image->scaleDown(width: 800);
+        
+        \Illuminate\Support\Facades\Storage::disk('public')->put($fullPath, (string) $image->toJpeg(75));
+        
+        return $fullPath;
     }
 }
